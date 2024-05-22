@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from constants import * 
+from objects import Point, Joint, JointChain
 
 
 class App():
@@ -8,9 +9,12 @@ class App():
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(SCREENSIZE)
 
-        self.point_1 = pygame.Vector2(384, 384)
-        self.point_2 = pygame.Vector2(384, 384)
-        self.radius = 120
+        self.point = Point((1, 0))
+        self.joint = Joint(self.point, 100)
+        self.joint1 = Joint(self.joint, 100)
+        self.joint2 = Joint(self.joint1, 100)
+
+        self.center = pygame.Vector2(384, 384)
 
     def loop(self):
         while True:
@@ -18,15 +22,19 @@ class App():
 
             self.screen.fill((255, 255, 255))
 
-            pygame.draw.circle(self.screen, RED, self.point_1, 5)
-            pygame.draw.circle(self.screen, RED, self.point_2, 5)
+            self.point.draw(self.screen)
+            self.joint.draw(self.screen)
+            self.joint.follow_point()
+            self.joint1.draw(self.screen)
+            self.joint1.follow_point()
+            self.joint2.draw(self.screen)
+            self.joint2.follow_point()
 
-            diff = self.point_2 - self.point_1
-            distance = diff.length()
-            diff_norm = diff.normalize()
-
-            self.point_2 -= diff_norm * (distance - self.radius)
-
+            displacement = self.center - self.joint2.position
+            self.joint.position += displacement
+            self.joint1.position += displacement
+            self.joint2.position += displacement
+            
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -37,7 +45,7 @@ class App():
                 raise SystemExit
             
             if event.type == MOUSEMOTION:
-                self.point_1.update(event.pos)
+                self.point.update(event.pos)
 
     def get_dt(self):
         delta_time = self.clock.get_time() / 1000
