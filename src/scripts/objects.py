@@ -13,6 +13,10 @@ class Point:
     def update(self, position):
         self.position.update(position)
 
+    def follow_point(self):
+        # imposter function
+        pass
+
 
 class Joint:
     def __init__(self, parent: Union['Joint', Point], length):
@@ -28,17 +32,47 @@ class Joint:
     def follow_point(self):
         diff = self.position - self.parent.position
         distance = diff.length()
+
+        if distance == 0:
+            return
+
         diff_norm = diff.normalize()
 
-        self.position -= diff_norm * (distance - self.length)
+        stretch = (distance - self.length)
+
+        self.position -= diff_norm * stretch
 
 
 class JointChain:
-    def __init__(self):
-        pass
+    def __init__(self, position, joint_num, joint_length):
+        self.position = position
+        self.target_point = Point((0, 0))
+
+        # generate joints
+        self.joints = []
+        
+        for i in range(joint_num):
+            if i == 0:
+                joint = Joint(self.target_point, joint_length)
+            else:
+                joint = Joint(self.joints[i - 1], joint_length)
+            self.joints.append(joint)
 
     def update(self):
-        pass
+        for joint in self.joints:
+            joint.follow_point()
+        
+        displacement = self.position - self.joints[-1].position
+        for joint in self.joints:
+            joint.position += displacement
 
-    def draw(self):
-        pass
+        self.target_point.position += displacement
+
+    def draw(self, surface):
+        for joint in self.joints:
+            joint.draw(surface)
+
+        self.target_point.draw(surface)
+
+    def update_target(self, position):
+        self.target_point.update(position)

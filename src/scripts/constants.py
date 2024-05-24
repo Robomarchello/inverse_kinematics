@@ -1,4 +1,5 @@
 SCREENSIZE = (768, 768)
 FPS = 0
 
+BLACK = (0, 0, 0)
 RED = (255, 0, 0)

@@ -9,32 +9,19 @@ class App():
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(SCREENSIZE)
 
-        self.point = Point((1, 0))
-        self.joint = Joint(self.point, 100)
-        self.joint1 = Joint(self.joint, 100)
-        self.joint2 = Joint(self.joint1, 100)
-
         self.center = pygame.Vector2(384, 384)
+        self.joint_chain = JointChain(self.center, 4, 90)
+
 
     def loop(self):
         while True:
             self.handle_events()
 
             self.screen.fill((255, 255, 255))
-
-            self.point.draw(self.screen)
-            self.joint.draw(self.screen)
-            self.joint.follow_point()
-            self.joint1.draw(self.screen)
-            self.joint1.follow_point()
-            self.joint2.draw(self.screen)
-            self.joint2.follow_point()
-
-            displacement = self.center - self.joint2.position
-            self.joint.position += displacement
-            self.joint1.position += displacement
-            self.joint2.position += displacement
             
+            self.joint_chain.update()
+            self.joint_chain.draw(self.screen)
+
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -45,7 +32,7 @@ class App():
                 raise SystemExit
             
             if event.type == MOUSEMOTION:
-                self.point.update(event.pos)
+                self.joint_chain.update_target(event.pos)
 
     def get_dt(self):
         delta_time = self.clock.get_time() / 1000
