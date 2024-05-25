@@ -68,11 +68,21 @@ class JointChain:
 
         self.target_point.position += displacement
 
+    def get_points(self):
+        points = []
+        
+        points.append(self.target_point.position)
+
+        for joint in self.joints:
+            points.append(joint.position)
+
+        return points
+
     def draw(self, surface):
         for joint in self.joints:
             joint.draw(surface)
 
         self.target_point.draw(surface)
 
-    def update_target(self, position):
+    def set_target(self, position):
         self.target_point.update(position)
