@@ -12,11 +12,7 @@ class Point:
 
     def update(self, position):
         self.position.update(position)
-
-    def follow_point(self):
-        # imposter function
-        pass
-
+        
 
 class Joint:
     def __init__(self, parent: Union['Joint', Point], length):
@@ -96,3 +92,37 @@ class JointChain(JointGroup):
             joint.draw(surface)
 
         self.target_point.draw(surface)
+
+
+class PhysicsJointChain(JointGroup):
+    def __init__(self, origin, joint_num, joint_length):
+        self.target_point = Point(origin)
+
+        # generate joints
+        joints = []
+        
+        for i in range(joint_num):
+            if i == 0:
+                joint = Joint(self.target_point, joint_length)
+            else:
+                joint = Joint(joints[i - 1], joint_length)
+
+            joints.append(joint)
+
+        self.velocity = pygame.Vector2(0, 0)
+
+        super().__init__(origin, self.target_point, joints)
+
+    def draw(self, surface):
+        self.target_point.draw(surface)
+
+        for joint in self.joints:
+            joint.draw(surface)
+
+    def update(self):
+        for joint in self.joints:
+            joint.position += self.velocity
+
+            joint.follow_point()
+        
+        self.velocity *= 0
