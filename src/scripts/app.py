@@ -1,9 +1,7 @@
 import pygame
 from pygame.locals import *
 from constants import * 
-from objects import Point, Joint, JointChain
 from stickman import Stickman
-
 
 class App():
     def __init__(self):
@@ -11,7 +9,6 @@ class App():
         self.screen = pygame.display.set_mode(SCREENSIZE)
 
         self.center = pygame.Vector2(384, 384)
-        #self.joint_chain = JointChain(self.center, 3, 100)
 
         self.stickman = Stickman()
 
@@ -20,12 +17,10 @@ class App():
             self.handle_events()
 
             self.screen.fill((255, 255, 255))
-            
-            # self.joint_chain.update()
-            # self.joint_chain.draw(self.screen)
 
             self.stickman.draw(self.screen)
             self.stickman.update()
+            
 
             pygame.display.update()
             self.clock.tick(FPS)
@@ -38,9 +33,6 @@ class App():
             
             self.stickman.handle_event(event)
             
-            # if event.type == MOUSEMOTION:
-            #     self.joint_chain.set_target(event.pos)
-
     def get_dt(self):
         delta_time = self.clock.get_time() / 1000
 
