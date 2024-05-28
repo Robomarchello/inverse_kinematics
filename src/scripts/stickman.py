@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import MOUSEMOTION
-from objects import JointChain, PhysicsJointChain
-from constants import *
+from .objects import JointChain, PhysicsJointChain
+from .constants import *
 
 
 class Stickman:
@@ -26,8 +26,9 @@ class Stickman:
         self.hand_left = PhysicsJointChain(self.hand_left_point, 2, 65)
         self.hand_right = PhysicsJointChain(self.hand_right_point, 2, 65)
         
-        self.leg_left_rect = pygame.Rect(0, 0, 25, 25)
-        self.leg_right_rect = pygame.Rect(0, 0, 25, 25)
+        leg_rect = pygame.Rect(0, 0, LEG_WIDTH, LEG_WIDTH)
+        self.leg_left_rect = leg_rect.copy()
+        self.leg_right_rect = leg_rect.copy()
 
         self.leg_left_rect.bottomleft = self.body.bottomleft        
         self.leg_right_rect.bottomright = self.body.bottomright
@@ -44,18 +45,19 @@ class Stickman:
             self.body.bottom + 130
         )
 
+        self._update_hands()
+        self._update_legs()
+
     def draw(self, surface):
         pygame.draw.rect(
             surface, 
             BLACK, 
-            self.body
+            self.body,
+            border_bottom_left_radius=BODY_RADIUS,
+            border_bottom_right_radius=BODY_RADIUS
             )
         
-        pygame.draw.rect(
-            surface, 
-            BLACK, 
-            self.shoulders
-            )
+        pygame.draw.rect(surface, BLACK, self.shoulders)
 
         self.draw_limb(surface, self.leg_left.get_points(), LEG_WIDTH)
         self.draw_limb(surface, self.leg_right.get_points(), LEG_WIDTH)

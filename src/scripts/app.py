@@ -1,7 +1,8 @@
 import pygame
 from pygame.locals import *
-from constants import * 
-from stickman import Stickman
+from .constants import * 
+from .stickman import Stickman
+
 
 class App():
     def __init__(self):
@@ -20,7 +21,6 @@ class App():
 
             self.stickman.draw(self.screen)
             self.stickman.update()
-            
 
             pygame.display.update()
             self.clock.tick(FPS)
@@ -40,7 +40,3 @@ class App():
             delta_time = 0.1
 
         return delta_time
-
-
-if __name__ == '__main__':
-    App().loop()
